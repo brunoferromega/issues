@@ -17,13 +17,14 @@ defmodule Issues.Cli do
   """
 
   def parse_args(argv) do
-    parse = OptionParser.parse(argv, switches: [help: :boolean], aliases: [h: :help])
-
-    case parse do
-      {[help: true], _, _} -> :help
-      {_, [user, project, count], _} -> {user, project, String.to_integer(count)}
-      {_, [user, project], _} -> {user, project, @default_count}
-      _ -> :help
-    end
+    OptionParser.parse(argv, switches: [help: :boolean], aliases: [h: :help])
+    |> elem(1)
+    |> args_to_internal_representation()
   end
+
+  defp args_to_internal_representation([user, project, count]),
+    do: {user, project, String.to_integer(count)}
+
+  defp args_to_internal_representation([user, project]), do: {user, project, @default_count}
+  defp args_to_internal_representation(_), do: :help
 end
