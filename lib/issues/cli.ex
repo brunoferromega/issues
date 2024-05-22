@@ -1,4 +1,6 @@
 defmodule Issues.Cli do
+  import Issues.TableFormatter, only: [print_table_for_columns: 2]
+
   @default_count 4
 
   @moduledoc """
@@ -11,6 +13,7 @@ defmodule Issues.Cli do
     argv
     |> parse_args
     |> process
+    |> print_table_for_columns(["number", "created_at", "title"])
   end
 
   @doc """
