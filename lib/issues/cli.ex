@@ -7,7 +7,11 @@ defmodule Issues.Cli do
   table of the last _n_ issues in a github project
   """
 
-  def run(argv), do: argv |> parse_args |> process
+  def run(argv) do
+    argv
+    |> parse_args
+    |> process
+  end
 
   @doc """
   `argv` can be -h or --help which returns :help
@@ -36,5 +40,15 @@ defmodule Issues.Cli do
     System.halt(0)
   end
 
-  def process({user, project, _count}), do: Issues.GithubIssues.fetch(user, project)
+  def process({user, project, _count}) do
+    Issues.GithubIssues.fetch(user, project)
+    |> decoder_reponse()
+  end
+
+  def decoder_response({:ok, body}), do: body
+
+  def decoder_reponse({:error, error}) do
+    IO.puts("Error fetching from of Github #{error["message"]}")
+    System.halt(0)
+  end
 end
