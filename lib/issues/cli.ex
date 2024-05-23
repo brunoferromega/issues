@@ -9,11 +9,10 @@ defmodule Issues.Cli do
   table of the last _n_ issues in a github project
   """
 
-  def run(argv) do
+  def main(argv) do
     argv
     |> parse_args
     |> process
-    |> print_table_for_columns(["number", "created_at", "title"])
   end
 
   @doc """
@@ -45,14 +44,15 @@ defmodule Issues.Cli do
 
   def process({user, project, count}) do
     Issues.GithubIssues.fetch(user, project)
-    |> decoder_reponse()
+    |> decoder_response()
     |> sort_desc()
     |> last(count)
+    |> print_table_for_columns(["number", "created_at", "title"])
   end
 
   def decoder_response({:ok, body}), do: body
 
-  def decoder_reponse({:error, error}) do
+  def decoder_response({:error, error}) do
     IO.puts("Error fetching from of Github #{error["message"]}")
     System.halt(0)
   end

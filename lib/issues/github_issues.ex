@@ -10,9 +10,9 @@ defmodule Issues.GithubIssues do
 
   def issues_url(user, project), do: "#{@github_url}/repos/#{user}/#{project}/issues"
 
-  def handle_response({:ok, %{status_code: status, body: body}}) do
+  def handle_response({:ok, %{status_code: status_code, body: body}}) do
     {
-      status |> check_status,
+      status_code |> check_status(),
       body |> Poison.Parser.parse!()
     }
   end
